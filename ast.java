@@ -926,7 +926,7 @@ abstract class UnaryExpNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-    //TODO
+        myExp.nameAnalysis(table);
     }
 
     // one child
@@ -940,7 +940,8 @@ abstract class BinaryExpNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-    //TODO
+        myExp1.nameAnalysis(table);
+        myExp2.nameAnalysis(table);
     }
 
     // two kids
