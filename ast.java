@@ -834,15 +834,9 @@ class IdNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-        nameAnalysis(table, true);
-    }
-    
-    public void nameAnalysis(SymTable table, boolean declaring) {
-        if(declaring) {
-        }
-        else {
-        }
-        //TODO
+        sym = table.lookupGlobal(myStrVal);
+        if (sym == null)
+            ErrMsg.fatal(myLineNum, myCharNum, "Undeclared identifier");
     }
     
     public int getLineNum() {
