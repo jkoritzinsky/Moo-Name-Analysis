@@ -14,6 +14,7 @@ public class SemSym {
     }
 }
 
+
 class FnSym extends SemSym {
     private String[] parameterTypes;
 
@@ -24,5 +25,32 @@ class FnSym extends SemSym {
     
     public String[] getParamTypes() {
         return parameterTypes;
+    }
+}
+
+class StructDefSym extends SemSym {
+    private SymTable fields;
+
+    public StructDefSym(String name, SymTable fields) {
+        super(name);
+        this.fields = fields;
+    }
+
+    public SymTable getFields() {
+        return this.fields;
+    }
+}
+
+class StructSym extends SemSym {
+    private String name;
+    private StructDefSym def;
+
+    public StructSym(String name, StructDefSym def) {
+        super(name);
+        this.def = def;
+    }
+    
+    public StructDefSym getDef() {
+        return def;
     }
 }
