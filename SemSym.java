@@ -45,8 +45,8 @@ class StructSym extends SemSym {
     private String name;
     private StructDefSym def;
 
-    public StructSym(String name, StructDefSym def) {
-        super(name);
+    public StructSym(StructDefSym def) {
+        super(def.getType());
         this.def = def;
     }
     

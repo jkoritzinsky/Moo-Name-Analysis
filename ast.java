@@ -307,7 +307,18 @@ class VarDeclNode extends DeclNode {
         if(myType instanceof VoidNode) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
         }
-        table.addDecl(myId.getId(), null); //TODO: Decide how to represent symbols.
+        try {
+            if(myType instanceof StructNode) {
+                StructNode myStructType = (StructNode)myType;
+                table.addDecl(myId.getId(), new StructSym(myStructType.getDefinition(table)));
+            } else {
+                table.addDecl(myId.getId(), new SemSym(myType.getType()));
+            }
+        } catch(DuplicateSymException ex) {
+          ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
+        }
     }
 
     // 3 kids
@@ -349,6 +360,8 @@ class FnDeclNode extends DeclNode {
         table.addDecl(myId.getId(), new FnSym(myId.getId(), types));
         } catch(DuplicateSymException ex) {
           ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
         }
         table.addScope();
         myFormalsList.nameAnalysis(table);
@@ -381,11 +394,17 @@ class FormalDeclNode extends DeclNode {
         if(myType instanceof VoidNode) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
         }
-        table.addDecl(myId.getId(), null); //TODO: Decide how to represent symbols.
+        try {
+            table.addDecl(myId.getId(), new SemSym(myType.getType()));
+        } catch(DuplicateSymException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
+        }
     }
     
-    public void getType() {
-        
+    public String getType() {
+        return myType.getType();
     }
 
     // 2 kids
@@ -414,7 +433,13 @@ class StructDeclNode extends DeclNode {
         myId.nameAnalysis(table);
         SymTable memberTable = new SymTable();
         myDeclList.nameAnalysis(memberTable);
-        table.addDecl(myId.getId(), null); //TODO: Decide how to represent symbols.
+        try {
+            table.addDecl(myId.getId(), new StructDefSym(myId.getId(), memberTable));
+        } catch(DuplicateSymException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
+        }
     }
 
     // 2 kids
@@ -427,6 +452,7 @@ class StructDeclNode extends DeclNode {
 // **********************************************************************
 
 abstract class TypeNode extends ASTnode {
+    public abstract String getType();
 }
 
 class IntNode extends TypeNode {
@@ -435,6 +461,10 @@ class IntNode extends TypeNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print("int");
+    }
+    
+    public String getType() {
+        return "int";
     }
     
     public void nameAnalysis(SymTable table) {
@@ -448,6 +478,10 @@ class BoolNode extends TypeNode {
     public void unparse(PrintWriter p, int indent) {
         p.print("bool");
     }
+    
+    public String getType() {
+        return "bool";
+    }
 
     public void nameAnalysis(SymTable table) {
     }
@@ -459,6 +493,10 @@ class VoidNode extends TypeNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print("void");
+    }
+    
+    public String getType() {
+        return "void";
     }
 
     public void nameAnalysis(SymTable table) {
@@ -477,6 +515,20 @@ class StructNode extends TypeNode {
 
     public void nameAnalysis(SymTable table) {
     //TODO
+    }
+    
+    public StructDefSym getDefinition(SymTable table) {
+        StructDefSym def = (StructDefSym)table.lookupGlobal(myId.getId());
+        if(def != null) {
+            return def;
+        }
+        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid name of struct type");
+        return null;
+    }
+    
+    
+    public String getType() {
+        return myId.getId();
     }
 	
 	// 1 kid
