@@ -31,8 +31,8 @@ class FnSym extends SemSym {
 class StructDefSym extends SemSym {
     private SymTable fields;
 
-    public StructDefSym(String name, SymTable fields) {
-        super(name);
+    public StructDefSym(String type, SymTable fields) {
+        super(type);
         this.fields = fields;
     }
 
@@ -42,11 +42,10 @@ class StructDefSym extends SemSym {
 }
 
 class StructSym extends SemSym {
-    private String name;
     private StructDefSym def;
 
-    public StructSym(String name, StructDefSym def) {
-        super(name);
+    public StructSym(String type, StructDefSym def) {
+        super(type);
         this.def = def;
     }
     
