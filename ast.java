@@ -197,6 +197,14 @@ class FormalsListNode extends ASTnode {
             node.nameAnalysis(table);
         }
     }
+    
+    public String[] getTypes() {
+      String[] types = new String[myFormals.size()];
+      for(int i = 0; i < myFormals.size(); ++i) {
+        types[i] = myFormals.get(i).getType();
+      }
+      return types;
+    }
 
     // list of kids (FormalDeclNodes)
     private List<FormalDeclNode> myFormals;
@@ -336,7 +344,12 @@ class FnDeclNode extends DeclNode {
     public void nameAnalysis(SymTable table) {
         myType.nameAnalysis(table);
         myId.nameAnalysis(table);
-        table.addDecl(myId.getId(), null); //TODO: Decide how to represent symbols.
+        String[] types = myFormalsList.getTypes();
+        try {
+        table.addDecl(myId.getId(), new FnSym(myId.getId(), types));
+        } catch(DuplicateSymException ex) {
+          ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        }
         table.addScope();
         myFormalsList.nameAnalysis(table);
         myBody.nameAnalysis(table);
@@ -369,6 +382,12 @@ class FormalDeclNode extends DeclNode {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
         }
         table.addDecl(myId.getId(), null); //TODO: Decide how to represent symbols.
+    }
+    
+    public void getType() {
+        StringWriter writer = new StringWriter();
+        myId.unparse(writer, 0);
+        return writer.toString();
     }
 
     // 2 kids
@@ -843,6 +862,7 @@ class IdNode extends ExpNode {
     private int myLineNum;
     private int myCharNum;
     private String myStrVal;
+    private SemSym sym;
 }
 
 class DotAccessExpNode extends ExpNode {
