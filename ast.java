@@ -303,7 +303,6 @@ class VarDeclNode extends DeclNode {
     
     public void nameAnalysis(SymTable table) {
         myType.nameAnalysis(table);
-        myId.nameAnalysis(table);
         if(myType instanceof VoidNode) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
         }
@@ -319,6 +318,8 @@ class VarDeclNode extends DeclNode {
         } catch(EmptySymTableException ex) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
         }
+        
+        myId.nameAnalysis(table);
     }
 
     // 3 kids
@@ -354,7 +355,6 @@ class FnDeclNode extends DeclNode {
     
     public void nameAnalysis(SymTable table) {
         myType.nameAnalysis(table);
-        myId.nameAnalysis(table);
         String[] types = myFormalsList.getTypes();
         try {
         table.addDecl(myId.getId(), new FnSym(myId.getId(), types));
@@ -366,7 +366,13 @@ class FnDeclNode extends DeclNode {
         table.addScope();
         myFormalsList.nameAnalysis(table);
         myBody.nameAnalysis(table);
-        table.removeScope();
+        try {
+            table.removeScope();
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(0, 0, "Internal Compiler Error: Empty Sym table");
+        }
+        
+        myId.nameAnalysis(table);
     }
 
     // 4 kids
@@ -390,7 +396,6 @@ class FormalDeclNode extends DeclNode {
     
     public void nameAnalysis(SymTable table) {
         myType.nameAnalysis(table);
-        myId.nameAnalysis(table);
         if(myType instanceof VoidNode) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
         }
@@ -401,6 +406,8 @@ class FormalDeclNode extends DeclNode {
         } catch(EmptySymTableException ex) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
         }
+        
+        myId.nameAnalysis(table);
     }
     
     public String getType() {
@@ -430,7 +437,6 @@ class StructDeclNode extends DeclNode {
     }
     
     public void nameAnalysis(SymTable table) {
-        myId.nameAnalysis(table);
         SymTable memberTable = new SymTable();
         myDeclList.nameAnalysis(memberTable);
         try {
@@ -440,6 +446,8 @@ class StructDeclNode extends DeclNode {
         } catch(EmptySymTableException ex) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
         }
+        
+        myId.nameAnalysis(table);
     }
 
     // 2 kids
@@ -514,15 +522,16 @@ class StructNode extends TypeNode {
     }
 
     public void nameAnalysis(SymTable table) {
-    //TODO
+        if(getDefinition(table) == null) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid name of struct type");
+        }
     }
     
     public StructDefSym getDefinition(SymTable table) {
-        StructDefSym def = (StructDefSym)table.lookupGlobal(myId.getId());
-        if(def != null) {
-            return def;
+        SemSym def = table.lookupGlobal(myId.getId());
+        if(def instanceof StructDefSym) {
+            return (StructDefSym)def;
         }
-        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid name of struct type");
         return null;
     }
     
@@ -662,7 +671,11 @@ class IfStmtNode extends StmtNode {
         table.addScope();
         myDeclList.nameAnalysis(table);
         myStmtList.nameAnalysis(table);
+        try {
         table.removeScope();
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(0, 0, "Internal Compiler Error: Empty Sym table");
+        }
     }
 
     // e kids
@@ -704,11 +717,19 @@ class IfElseStmtNode extends StmtNode {
         table.addScope();
         myThenDeclList.nameAnalysis(table);
         myThenStmtList.nameAnalysis(table);
-        table.removeScope();
+        try {
+            table.removeScope();
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(0, 0, "Internal Compiler Error: Empty Sym table");
+        }
         table.addScope();
         myElseDeclList.nameAnalysis(table);
         myElseStmtList.nameAnalysis(table);
-        table.removeScope();
+        try {
+            table.removeScope();
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(0, 0, "Internal Compiler Error: Empty Sym table");
+        }
     }
 
 
@@ -743,7 +764,11 @@ class WhileStmtNode extends StmtNode {
         table.addScope();
         myDeclList.nameAnalysis(table);
         myStmtList.nameAnalysis(table);
-        table.removeScope();
+        try {
+            table.removeScope();
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(0, 0, "Internal Compiler Error: Empty Sym table");
+        }
     }
 
     // 3 kids
@@ -982,7 +1007,10 @@ class CallExpNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-    //TODO
+        //TODO
+        if(myExpList != null) {
+            myExpList.nameAnalysis(table);
+        }
     }
 
     // 2 kids
