@@ -851,6 +851,10 @@ class IdNode extends ExpNode {
         return myStrVal;
     }
 
+    public SemSym getSym() {
+        return sym;
+    }
+
     private int myLineNum;
     private int myCharNum;
     private String myStrVal;
