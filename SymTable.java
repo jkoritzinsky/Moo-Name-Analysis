@@ -46,6 +46,19 @@ public class SymTable {
         }
         return null;
     }
+
+    public SemSym lookupStruct(String name) {
+        if (list.isEmpty())
+            return null;
+        for (HashMap<String, SemSym> symTab : list) {
+            SemSym sym = symTab.get(name);
+            if (!(sym instanceof StructDefSym))
+                continue;
+            if (sym != null)
+                return sym;
+        }
+        return null;
+    }
     
     public void removeScope() throws EmptySymTableException {
         if (list.isEmpty())

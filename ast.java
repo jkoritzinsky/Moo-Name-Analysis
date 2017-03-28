@@ -528,7 +528,7 @@ class StructNode extends TypeNode {
     }
     
     public StructDefSym getDefinition(SymTable table) {
-        SemSym def = table.lookupGlobal(myId.getId());
+        SemSym def = table.lookupStruct(myId.getId());
         if(def instanceof StructDefSym) {
             return (StructDefSym)def;
         }
