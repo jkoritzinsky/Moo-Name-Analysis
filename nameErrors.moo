@@ -39,6 +39,8 @@ void main() {
   z = 2;
   a.b = 3;
   r.s = e.b;
+  return;
+  return a;
   }
   
   while(true) {
