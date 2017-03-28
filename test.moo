@@ -46,9 +46,11 @@ int f(int x, bool b) {
     bool x;
     if(b) {
       int x;
+      return;
     }
     else {
       x = true;
+      return 1;
     }
   }
 }
