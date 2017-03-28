@@ -357,7 +357,7 @@ class FnDeclNode extends DeclNode {
         myType.nameAnalysis(table);
         String[] types = myFormalsList.getTypes();
         try {
-        table.addDecl(myId.getId(), new FnSym(myId.getId(), types));
+        table.addDecl(myId.getId(), new FnSym(myType.getType(), types));
         } catch(DuplicateSymException ex) {
           ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
         } catch(EmptySymTableException ex) {
@@ -440,7 +440,7 @@ class StructDeclNode extends DeclNode {
         SymTable memberTable = new SymTable();
         myDeclList.nameAnalysis(memberTable);
         try {
-            table.addDecl(myId.getId(), new StructDefSym(myId.getId(), memberTable));
+            table.addDecl(myId.getId(), new StructDefSym(null, memberTable));
         } catch(DuplicateSymException ex) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
         } catch(EmptySymTableException ex) {
@@ -910,9 +910,11 @@ class IdNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print(myStrVal);
-        p.print("(");
-        p.print(sym.getType());
-        p.print(")");
+        if(sym != null && sym.getType() != null) {
+            p.print("(");
+            p.print(sym.getType());
+            p.print(")");
+        }
     }
     
     public void nameAnalysis(SymTable table) {
