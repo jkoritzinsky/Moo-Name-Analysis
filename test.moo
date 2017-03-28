@@ -37,6 +37,7 @@ void g() {
     struct Point p;
     struct q test;
     test.d.i = 4;
+    b = !b;
     p.x = a;
     b = a == 3;
     f(a + p.y*2, b);
