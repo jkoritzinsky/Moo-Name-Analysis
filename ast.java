@@ -171,6 +171,12 @@ class DeclListNode extends ASTnode {
             node.nameAnalysis(table);
         }
     }
+    
+    public void nameAnalysis(SymTable globalTable, SymTable typeScopeTable) {
+        for(DeclNode node: myDecls) {
+            node.nameAnalysis(globalTable, typeScopeTable);
+        }
+    }
 
     // list of kids (DeclNodes)
     private List<DeclNode> myDecls;
@@ -284,6 +290,8 @@ class ExpListNode extends ASTnode {
 // **********************************************************************
 
 abstract class DeclNode extends ASTnode {
+    public abstract void nameAnalysis(SymTable table);
+    public void nameAnalysis(SymTable typeTable, SymTable nameTable) {}
 }
 
 class VarDeclNode extends DeclNode {
@@ -320,6 +328,27 @@ class VarDeclNode extends DeclNode {
         }
         
         myId.nameAnalysis(table);
+    }
+    
+    public void nameAnalysis(SymTable typeTable, SymTable nameTable) {
+        myType.nameAnalysis(typeTable);
+        if(myType instanceof VoidNode) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
+        }
+        try {
+            if(myType instanceof StructNode) {
+                StructNode myStructType = (StructNode)myType;
+                nameTable.addDecl(myId.getId(), new StructSym(myStructType.getDefinition(typeTable)));
+            } else {
+                nameTable.addDecl(myId.getId(), new SemSym(myType.getType()));
+            }
+        } catch(DuplicateSymException ex) {
+          ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+        } catch(EmptySymTableException ex) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Internal Compiler Error. Empty Sym Table");
+        }
+        
+        myId.nameAnalysis(nameTable);
     }
 
     // 3 kids
@@ -438,7 +467,7 @@ class StructDeclNode extends DeclNode {
     
     public void nameAnalysis(SymTable table) {
         SymTable memberTable = new SymTable();
-        myDeclList.nameAnalysis(memberTable);
+        myDeclList.nameAnalysis(table, memberTable);
         try {
             table.addDecl(myId.getId(), new StructDefSym(myId.getId(), memberTable));
         } catch(DuplicateSymException ex) {
