@@ -812,7 +812,9 @@ class ReturnStmtNode extends StmtNode {
     }
     
     public void nameAnalysis(SymTable table) {
-        myExp.nameAnalysis(table);
+        if(myExp != null) {
+            myExp.nameAnalysis(table);
+        }
     }
 
     // 1 kid
@@ -952,7 +954,42 @@ class DotAccessExpNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-    //TODO
+        getSym(table);
+    }
+    
+    public SemSym getSym(SymTable table) {
+        StructSym locSym = null;
+        if(myLoc instanceof IdNode) {
+            IdNode myId = (IdNode)myLoc;
+            myId.nameAnalysis(table);
+            SemSym sym = myId.getSym();
+            if(!(sym instanceof StructSym)) {
+                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Dot-access of a non-struct type");
+                return null;
+            }
+            locSym = (StructSym)sym;
+        }
+        if(myLoc instanceof DotAccessExpNode) {
+            DotAccessExpNode myAccess = (DotAccessExpNode)myLoc;
+            SemSym sym = myAccess.getSym(table);
+            IdNode myId = myAccess.getId();
+            if(!(sym instanceof StructSym)) {
+                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Dot-access of a non-struct type");
+                return null;
+            }
+            locSym = (StructSym)sym;
+        }
+        myId.nameAnalysis(locSym.getDef().getFields());
+        SemSym accessedSym = myId.getSym();
+        if(accessedSym == null) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Dot-access of a non-struct type");
+            return null;
+        }
+        return accessedSym;
+    }
+    
+    private IdNode getId() {
+        return myId;
     }
 
     // 2 kids
@@ -975,7 +1012,8 @@ class AssignNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-    //TODO
+      myLhs.nameAnalysis(table);
+      myExp.nameAnalysis(table);
     }
 
     // 2 kids
@@ -1005,7 +1043,8 @@ class CallExpNode extends ExpNode {
     }
     
     public void nameAnalysis(SymTable table) {
-        //TODO
+        myId.nameAnalysis(table);
+
         if(myExpList != null) {
             myExpList.nameAnalysis(table);
         }
