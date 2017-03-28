@@ -1,3 +1,24 @@
+void other() {
+    int x;
+    int y;
+    bool one;
+    bool two;
+    bool three;
+    one = true;
+    two = false;
+    three = true;
+    x = 0;
+    y = 0;
+    if(one && two && three) {
+        x = 1;
+    }
+    if(one || two || three) {
+        y = 1;
+    } 
+    else {
+        y = -1;
+    }
+}
 struct p {
     int i;
 };
