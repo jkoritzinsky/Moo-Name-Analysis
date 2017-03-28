@@ -56,3 +56,9 @@ void main() {
   cout << hi;
   f(1,bye);
 }
+
+void main(int a, bool b) {
+  bool a;
+  int c;
+  bool c;
+}
