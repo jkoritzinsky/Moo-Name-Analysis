@@ -3,6 +3,7 @@ public class StructSym extends SemSym {
 
     public StructSym(StructDefSym def) {
         super(def.getType());
+        this.def = def;
     }
     
     public StructDefSym getDef() {
