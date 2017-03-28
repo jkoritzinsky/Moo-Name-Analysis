@@ -1041,8 +1041,17 @@ class CallExpNode extends ExpNode {
     public void unparse(PrintWriter p, int indent) {
 	    myId.unparse(p, 0);
 		p.print("(");
+                String [] paramTypes = ((FnSym)myId.getSym()).getParamTypes();
+                for (int i=0; i<paramTypes.length; i++) {
+                    p.print(paramTypes[i]);
+                    if (i != paramTypes.length - 1)
+                        p.print(",");
+                }
+                p.print("->");
+                p.print(((FnSym)myId.getSym()).getReturnType());
+                p.print(")(");
 		if (myExpList != null) {
-			myExpList.unparse(p, 0);
+                    myExpList.unparse(p, 0);
 		}
 		p.print(")");
     }
