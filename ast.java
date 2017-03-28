@@ -987,7 +987,7 @@ class DotAccessExpNode extends ExpNode {
         myId.nameAnalysis(locSym.getDef().getFields());
         SemSym accessedSym = myId.getSym();
         if(accessedSym == null) {
-            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Dot-access of a non-struct type");
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
             return null;
         }
         return accessedSym;
