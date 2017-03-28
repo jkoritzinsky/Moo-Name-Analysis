@@ -35,21 +35,25 @@ sym.class: sym.java
 sym.java: moo.cup
 	java    java_cup.Main < moo.cup
 
-ErrMsg.class: ErrMsg.java
+ErrMsg.class: ErrMsg.java SemSym.class
 	$(JC) ErrMsg.java
 
-FnSym.class: FnSym.java
+FnSym.class: FnSym.java SemSym.class
 	$(JC) FnSym.java
 
-StructDefSym.class: StructDefSym.java
+StructDefSym.class: StructDefSym.java SemSym.class
 	$(JC) StructDefSym.java
 
-StructSym.class: StructSym.java
+StructSym.class: StructSym.java SemSym.class
 	$(JC) StructSym.java
+
+SemSym.class: SemSym.java
+	$(JC) SemSym.java
 
 ##test
 test:
 	java   P4 test.moo test.out
+	java   P4 nameErrors.moo nameErrors.out
 
 ###
 # clean
