@@ -56,7 +56,8 @@ public class P3 {
             System.exit(-1);
         }
         root.nameAnalysis();
-        //add check for any name analysis errors
+        if (ErrMsg.fatalErrors == true)
+            exit(1); //name analysis errors were present
         ((ASTnode)root.value).unparse(outFile, 0);
         outFile.close();
 
