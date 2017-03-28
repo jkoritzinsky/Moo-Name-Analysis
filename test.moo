@@ -35,6 +35,8 @@ void g() {
     int a;
     bool b;
     struct Point p;
+    struct q test;
+    test.d.i = 4;
     p.x = a;
     b = a == 3;
     f(a + p.y*2, b);

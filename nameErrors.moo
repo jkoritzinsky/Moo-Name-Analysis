@@ -25,6 +25,7 @@ void main() {
   struct notAStruct q;
   struct t e;
   e.z = 5;
+  e.b.b = 1;
   z = 2;
   a.b = 3;
   r.s = e.b;
