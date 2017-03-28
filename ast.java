@@ -297,7 +297,7 @@ class VarDeclNode extends DeclNode {
         doIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
-        myId.unparse(p, 0);
+        p.print(myId.getId());
         p.println(";");
     }
     
@@ -345,7 +345,7 @@ class FnDeclNode extends DeclNode {
         doIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
-        myId.unparse(p, 0);
+        p.print(myId.getId());
         p.print("(");
         myFormalsList.unparse(p, 0);
         p.println(") {");
@@ -391,7 +391,7 @@ class FormalDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
         myType.unparse(p, 0);
         p.print(" ");
-        myId.unparse(p, 0);
+        p.print(myId.getId());
     }
     
     public void nameAnalysis(SymTable table) {
@@ -428,8 +428,8 @@ class StructDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("struct ");
-		myId.unparse(p, 0);
-		p.println("{");
+		    p.print(myId.getId());
+		p.println(" {");
         myDeclList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("};\n");
@@ -440,7 +440,7 @@ class StructDeclNode extends DeclNode {
         SymTable memberTable = new SymTable();
         myDeclList.nameAnalysis(memberTable);
         try {
-            table.addDecl(myId.getId(), new StructDefSym(null, memberTable));
+            table.addDecl(myId.getId(), new StructDefSym(myId.getId(), memberTable));
         } catch(DuplicateSymException ex) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
         } catch(EmptySymTableException ex) {

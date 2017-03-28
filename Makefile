@@ -50,6 +50,7 @@ StructSym.class: StructSym.java
 ##test
 test:
 	java   P4 test.moo test.out
+	java   P4 nameErrors.moo nameErrors.out
 
 ###
 # clean
