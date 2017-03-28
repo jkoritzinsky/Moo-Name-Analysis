@@ -4,6 +4,10 @@ struct t {
   bool b;
 };
 
+struct t {
+  int a;
+};
+
 void main() {
   void b;
   int a;
