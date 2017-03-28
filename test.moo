@@ -1,9 +1,16 @@
 struct p {
     int i;
 };
-void main() {
+struct q {
     int p;
-    struct p e;
+    struct p d;
+};
+struct r {
+    int i;
+};
+void main() {
+    int r;
+    struct r e;
 }
 struct Point {
     int x;
