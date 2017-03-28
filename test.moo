@@ -1,3 +1,10 @@
+struct p {
+    int i;
+};
+void main() {
+    int p;
+    struct p e;
+}
 struct Point {
     int x;
     int y;
