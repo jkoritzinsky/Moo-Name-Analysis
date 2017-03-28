@@ -23,7 +23,7 @@ parser.java: moo.cup
 Yylex.class: moo.jlex.java sym.class ErrMsg.class
 	$(JC)   moo.jlex.java
 
-ASTnode.class: ast.java
+ASTnode.class: ast.java ErrMsg.java FnSym.java StructDefSym.java StructSym.java
 	$(JC)  ast.java
 
 moo.jlex.java: moo.jlex sym.class
@@ -37,6 +37,15 @@ sym.java: moo.cup
 
 ErrMsg.class: ErrMsg.java
 	$(JC) ErrMsg.java
+
+FnSym.class: FnSym.java
+	$(JC) FnSym.java
+
+StructDefSym.class: StructDefSym.java
+	$(JC) StructDefSym.java
+
+StructSym.class: StructSym.java
+	$(JC) StructSym.java
 
 ##test
 test:
