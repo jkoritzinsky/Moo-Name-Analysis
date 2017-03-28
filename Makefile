@@ -59,4 +59,4 @@ test:
 # clean
 ###
 clean:
-	rm -f *~ *.class parser.java moo.jlex.java sym.java
+	rm -f *~ *.class parser.java moo.jlex.java
