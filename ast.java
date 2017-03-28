@@ -908,6 +908,9 @@ class IdNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print(myStrVal);
+        p.print("(");
+        p.print(sym.getType());
+        p.print(")");
     }
     
     public void nameAnalysis(SymTable table) {
